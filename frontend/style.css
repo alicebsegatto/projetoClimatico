@@ -1,0 +1,226 @@
+/* =========================================================
+   frontend/style.css
+   Estilos do painel EcoSense: verde-floresta, sálvia, creme
+   e branco. Âmbar SOMENTE para alertas de temperatura.
+   Sem bibliotecas externas: só fontes que já vêm no sistema.
+   ========================================================= */
+
+/* --- Paleta e fontes em variáveis: para mudar o tema, basta
+   trocar os valores aqui em cima --- */
+:root {
+    --floresta: #1f3d2b;   /* verde bem escuro: cabeçalho e textos fortes */
+    --musgo:    #3f7a54;   /* verde médio: estados ativos e gráfico */
+    --salvia:   #e3ede4;   /* verde acinzentado: fundos suaves */
+    --salvia-2: #cfe0d2;   /* sálvia um pouco mais forte: zona de conforto da barra */
+    --creme:    #f6f3ea;   /* fundo da página */
+    --branco:   #ffffff;
+    --texto:    #22332a;
+    --suave:    #667a6d;   /* texto secundário */
+    --linha:    #dfe7dd;   /* bordas finas */
+    --ambar:       #b7791f;   /* alerta de temperatura (texto e marcador) */
+    --ambar-claro: #f5e9c8;   /* fundo da zona de transição */
+    --ambar-medio: #ebc98a;   /* fundo da zona elevada */
+    --erro:     #c4513f;   /* só para "desconectado" */
+    --serifa: Georgia, "Times New Roman", serif;
+    --sans:   "Segoe UI", system-ui, -apple-system, sans-serif;
+    --sombra: 0 1px 2px rgba(31, 61, 43, 0.06), 0 8px 24px rgba(31, 61, 43, 0.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--sans);
+    background: var(--creme);
+    color: var(--texto);
+    line-height: 1.5;
+}
+
+/* ---------- Cabeçalho ---------- */
+.topo {
+    background: var(--floresta);
+    color: #eef5ee;
+    padding: 22px 24px 64px;       /* o espaço extra embaixo deixa o card principal "subir" sobre o verde */
+}
+.topo-conteudo, main { max-width: 1040px; margin: 0 auto; }
+.topo-conteudo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.topo h1 { font-family: var(--serifa); font-weight: 400; font-size: 32px; letter-spacing: 0.01em; line-height: 1.2; }
+.topo .subtitulo { color: #b9d2bf; font-size: 14px; }
+
+.topo-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.status, .atualizacao {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1); font-size: 13px;
+}
+.atualizacao { color: #c9ddcd; }
+.atualizacao strong { color: #eef5ee; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.status .bolinha {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #6fdc8c;                           /* verde: conectado */
+    animation: pulsar 2.4s ease-in-out infinite;   /* mostra que está "ao vivo" */
+}
+.status.offline .bolinha { background: var(--erro); animation: none; }   /* vermelho: desconectado */
+
+@keyframes pulsar { 50% { opacity: 0.35; } }
+@keyframes girar  { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+    .status .bolinha, .sensor.ativo .icone svg.gira { animation: none; }
+    .marcador { transition: none; }
+}
+
+main { padding: 0 24px 48px; }
+
+/* ---------- Cards (base de tudo) ---------- */
+.card {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 18px;
+    box-shadow: var(--sombra);
+}
+
+/* ---------- Card principal: temperatura ---------- */
+.temperatura-card {
+    margin-top: -40px;             /* sobe sobre o cabeçalho verde */
+    padding: 26px 30px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 28px 44px;
+    align-items: center;
+}
+.temp-titulo { display: flex; align-items: center; gap: 10px; color: var(--suave); font-size: 14px; }
+.temp-titulo svg { width: 22px; height: 22px; color: var(--musgo); }
+.temperatura-card .valor {
+    font-size: 64px; font-weight: 600; line-height: 1.1;
+    color: var(--floresta); margin: 6px 0 10px;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+.valor .unidade { font-size: 24px; font-weight: 500; color: var(--suave); margin-left: 6px; letter-spacing: 0; }
+
+/* Etiqueta da condição térmica */
+.condicao {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 13px; font-weight: 600;
+    background: var(--salvia); color: var(--floresta);
+}
+.condicao::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--musgo); }
+
+.estado-proximo .condicao  { background: var(--ambar-claro); color: #7a5410; }
+.estado-proximo .condicao::before { background: var(--ambar); }
+.estado-elevado .condicao  { background: var(--ambar-medio); color: #6b4a0e; }
+.estado-elevado .condicao::before { background: var(--ambar); }
+.estado-elevado .valor { color: var(--ambar); }
+
+/* Lado direito: descrição + barra */
+.temp-detalhe .resumo { color: var(--texto); font-size: 16px; max-width: 52ch; margin-bottom: 22px; }
+
+.barra { position: relative; height: 10px; border-radius: 999px; display: flex; overflow: hidden; }
+.zona-conforto   { background: var(--salvia-2); }
+.zona-transicao  { background: var(--ambar-claro); }
+.zona-elevada    { background: var(--ambar-medio); }
+.barra-caixa { position: relative; padding-top: 0; }
+.marcador {
+    position: absolute; top: -5px; width: 20px; height: 20px; margin-left: -10px;
+    border-radius: 50%; background: var(--floresta);
+    border: 3px solid var(--branco); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    transition: left 0.6s ease;
+}
+.estado-elevado .marcador, .estado-proximo .marcador { background: var(--ambar); }
+
+.escala { position: relative; height: 18px; margin-top: 8px; font-size: 11px; color: var(--suave); font-variant-numeric: tabular-nums; }
+.escala span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.legenda-barra { font-size: 12px; color: var(--suave); margin-top: 6px; }
+
+/* ---------- Cards dos sensores ---------- */
+.sensores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+.sensor { padding: 20px 22px; }
+.sensor-topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+.icone {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--salvia); color: var(--suave);
+}
+.icone svg { width: 22px; height: 22px; }
+.sensor.ativo .icone { background: var(--musgo); color: var(--branco); }
+.sensor.ativo .icone svg.gira { animation: girar 2.4s linear infinite; }   /* ventilador girando quando ligado */
+
+.indicador { width: 10px; height: 10px; border-radius: 50%; background: #c3d0c6; margin-top: 4px; }
+.sensor.ativo .indicador { background: var(--musgo); box-shadow: 0 0 0 4px rgba(63, 122, 84, 0.18); }
+
+.sensor .rotulo { color: var(--suave); font-size: 13px; }
+.sensor .valor {
+    font-size: 24px; font-weight: 600; color: var(--floresta);
+    line-height: 1.25; margin: 2px 0 6px; font-variant-numeric: tabular-nums;
+}
+.sensor:not(.ativo) .valor { color: #7b8e80; }
+.sensor .valor .unidade { font-size: 15px; }
+.sensor .descricao { font-size: 13px; color: var(--suave); line-height: 1.45; }
+
+/* ---------- Títulos de seção ---------- */
+section { margin-top: 36px; }
+h2 { font-family: var(--serifa); font-weight: 400; font-size: 22px; color: var(--floresta); margin-bottom: 14px; }
+
+/* ---------- Resumo do período: faixa única com divisórias ---------- */
+.resumo-faixa {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 18px;
+    box-shadow: var(--sombra);
+}
+.resumo-faixa div { padding: 18px 20px; border-left: 1px solid var(--linha); }
+.resumo-faixa div:first-child { border-left: none; }
+.resumo-faixa dt { color: var(--suave); font-size: 13px; margin-bottom: 2px; }
+.resumo-faixa dd { font-size: 24px; font-weight: 600; color: var(--floresta); font-variant-numeric: tabular-nums; }
+
+/* ---------- Gráfico ---------- */
+canvas {
+    display: block;
+    width: 100%;
+    height: auto;                 /* mantém a proporção 900x260 em qualquer tela */
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 18px;
+    box-shadow: var(--sombra);
+}
+
+/* ---------- Tabela ---------- */
+.tabela-caixa { overflow-x: auto; background: var(--branco); border: 1px solid var(--linha); border-radius: 18px; box-shadow: var(--sombra); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th {
+    background: var(--salvia); color: var(--floresta);
+    font-weight: 600; text-align: left; padding: 12px 16px; white-space: nowrap;
+}
+td { padding: 11px 16px; border-top: 1px solid #edf2ec; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.badge.ligado    { background: #d6ecda; color: #25613a; }
+.badge.desligado { background: #eef2ee; color: #7b8c80; }
+
+/* ---------- Telas menores ---------- */
+@media (max-width: 900px) {
+    .sensores { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 720px) {
+    .temperatura-card { grid-template-columns: 1fr; padding: 22px; }
+    .temperatura-card .valor { font-size: 54px; }
+    .resumo-faixa div { border-left: none; border-top: 1px solid var(--linha); }
+    .resumo-faixa div:first-child { border-top: none; }
+}
+@media (max-width: 480px) {
+    .sensores { grid-template-columns: 1fr; }
+    .topo h1 { font-size: 28px; }
+}
