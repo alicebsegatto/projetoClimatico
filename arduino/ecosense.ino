@@ -1,20 +1,11 @@
-
 #include <Servo.h>
 #include <math.h>
-
-// =================================
-// PINOS DOS COMPONENTES
-// =================================
 
 #define PINO_TRIG   4
 #define PINO_ECHO   5
 #define PINO_LED    3
 #define PINO_SERVO  9
 #define PINO_NTC    A0
-
-// =================================
-// CONFIGURACOES
-// =================================
 
 #define DISTANCIA_PRESENCA 50.0
 
@@ -32,10 +23,6 @@
 #define INTERVALO_SERVO 15
 #define PASSO_SERVO 2
 
-// =================================
-// COMPONENTES E ESTADOS
-// =================================
-
 Servo servo;
 
 bool presenca = false;
@@ -48,9 +35,6 @@ int direcaoServo = 1;
 unsigned long ultimoEnvio = 0;
 unsigned long ultimoMovimentoServo = 0;
 
-// =================================
-// CONTROLE DA TEMPERATURA
-// =================================
 
 void controlarVentilacao(float temperatura) {
 
@@ -70,10 +54,6 @@ void controlarVentilacao(float temperatura) {
   // Precisa ter presença E temperatura alta
   ventilacao = presenca && temperaturaAlta;
 }
-
-// =================================
-// MOVIMENTO DO SERVO
-// =================================
 
 void movimentarServo() {
 
@@ -107,10 +87,6 @@ void movimentarServo() {
   }
 }
 
-// =================================
-// CONFIGURACAO INICIAL
-// =================================
-
 void setup() {
 
   pinMode(PINO_TRIG, OUTPUT);
@@ -122,10 +98,6 @@ void setup() {
 
   Serial.begin(9600);
 }
-
-// =================================
-// LEITURA DO SENSOR ULTRASSONICO
-// =================================
 
 float lerDistancia() {
 
@@ -147,9 +119,6 @@ float lerDistancia() {
   return duracao * 0.0343 / 2.0;
 }
 
-// =================================
-// LEITURA DO SENSOR NTC
-// =================================
 
 float lerTemperatura() {
 
@@ -171,9 +140,6 @@ float lerTemperatura() {
   return temperaturaK - 273.15;
 }
 
-// =================================
-// LOOP PRINCIPAL
-// =================================
 
 void loop() {
 
