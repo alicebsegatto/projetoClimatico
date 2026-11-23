@@ -190,3 +190,6 @@ void loop() {
     Serial.println(ventilacao);
   }
 }
+
+
+

@@ -4,11 +4,11 @@ const INTERVALO_MS  = 2000;
 
 // Limites de temperatura: são os MESMOS valores do firmware (ecosense.ino) ---
 const TEMP_LIMITE  = 26.0;                    // TEMPERATURA_LIMITE: acima disso a ventilação abre
-const HISTERESE    = 1.0;                     // HISTERESE: folga para não ligar/desligar toda hora
-const TEMP_RETORNO = TEMP_LIMITE - HISTERESE; // 25 °C: abaixo disso a ventilação fecha
+const HISTERESE    = 3.0;                     // HISTERESE: folga para não ligar/desligar toda hora
+const TEMP_RETORNO = 23.0; // 23 °C: abaixo disso a ventilação fecha
 
-const ESCALA_MIN = TEMP_LIMITE - 4;           // 22 °C
-const ESCALA_MAX = TEMP_LIMITE + 4;           // 30 °C
+const ESCALA_MIN = TEMP_LIMITE - 4;         
+const ESCALA_MAX = TEMP_LIMITE + 4;          
 
 function formatarHora(dataHora) {
     if (!dataHora) return "--:--:--";
@@ -33,8 +33,8 @@ function montarEscala() {
 }
 
 function classificarTemperatura(temperatura) {
-    if (temperatura > TEMP_LIMITE) return "elevado";
-    if (temperatura < TEMP_RETORNO) return "confortavel";
+    if (temperatura >= TEMP_LIMITE) return "elevado";
+    if (temperatura <= TEMP_RETORNO) return "confortavel";
     return "proximo";
 }
 
@@ -114,12 +114,12 @@ function atualizarCards(leitura) {
     // Ventilação: o motivo muda conforme a lógica do firmware
     let motivo;
     if (ventLigada) {
-        motivo = leitura.temperatura > TEMP_LIMITE
+        motivo = leitura.temperatura >= TEMP_LIMITE
             ? "Acionada: temperatura acima de " + TEMP_LIMITE + " °C"
             : "Ligada até a temperatura cair abaixo de " + TEMP_RETORNO + " °C";
     } else if (!temPresenca) {
         motivo = "Desligada: sala vazia";
-    } else if (leitura.temperatura > TEMP_LIMITE) {
+    } else if (leitura.temperatura >= TEMP_LIMITE) {
         motivo = "Aguardando acionamento automático";
     } else {
         motivo = "Desligada: temperatura abaixo do limite de " + TEMP_LIMITE + " °C";
