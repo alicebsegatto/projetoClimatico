@@ -102,5 +102,5 @@ As leituras são enviadas à Raspberry Pi, armazenadas no banco de dados e apres
 - Alice Bohnen Segatto
 - Aline Hoffmann Passamani
 - Ana Luisa da Silva Amaral
-- Thaise Chaves Zanin
 - Pedro Bohnen Segatto
+- Thaise Chaves Zanin
